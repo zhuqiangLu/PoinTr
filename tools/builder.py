@@ -11,6 +11,48 @@ from models import build_model_from_cfg
 from utils.logger import *
 from utils.misc import *
 
+
+def collate_fn(batch):
+    # handle the problem of diffrent input and gt size 
+    # unify the size of input and return gt as a list 
+
+    tax_ids = list() 
+    model_ids = list() 
+    inputs = list() 
+    gts = list() 
+    n_points = list()
+    gt_labels = list()
+
+    n_min = float('inf')
+
+    
+    for tax_id, model_id, (inp, gt, npoint), label in batch:
+        n_inp = inp.shape[0]
+        if n_inp < n_min:
+            n_min = n_inp
+
+        tax_ids.append(tax_id) 
+        model_ids.append(model_id) 
+        inputs.append(inp) 
+        gts.append(torch.from_numpy(gt))
+        n_points.append(npoint)
+        gt_labels.append(label)
+
+    cut_inp = list()
+    for inp in inputs:
+        cut_inp.append(torch.from_numpy(inp[:n_min]))
+
+    cut_gt_label = list()
+
+    for label in gt_labels:
+        cut_gt_label.append(torch.from_numpy(label[:n_min])) 
+
+    cut_inp = torch.stack(cut_inp)
+    gts = torch.stack(gts)
+    gt_labels = torch.stack(cut_gt_label)
+
+    return tax_ids, model_ids, (cut_inp, gts, n_points)
+
 def dataset_builder(args, config):
     dataset = build_dataset_from_cfg(config._base_, config.others)
     shuffle = config.others.subset == 'train'
@@ -20,14 +62,14 @@ def dataset_builder(args, config):
                                             num_workers = int(args.num_workers),
                                             drop_last = config.others.subset == 'train',
                                             worker_init_fn = worker_init_fn,
-                                            sampler = sampler)
+                                            sampler = sampler, collate_fn = collate_fn)
     else:
         sampler = None
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=config.others.bs if shuffle else 1,
                                                 shuffle = shuffle, 
                                                 drop_last = config.others.subset == 'train',
                                                 num_workers = int(args.num_workers),
-                                                worker_init_fn=worker_init_fn)
+                                                worker_init_fn=worker_init_fn, collate_fn = collate_fn)
     return sampler, dataloader
 
 def model_builder(config):
