@@ -1,0 +1,25 @@
+NAME: MPCN
+CATEGORY_FILE_PATH: data/PCN/PCN.json
+N_POINTS: 16384
+  # COMPLETE_ONLY: TRUE
+RATIO: 0.5
+  # SPLIT: 6144 
+SPLIT: 6144 
+N_RENDERINGS: 1
+  # PARTIAL_POINTS_PATH: data/0701n/%s/partial/%0s.pcd
+  # COMPLETE_POINTS_PATH: data/0701n/%s/complete/%s.pcd
+PARTIAL_POINTS_PATH: FaceCenteredCubic/
+COMPLETE_POINTS_PATH: FaceCenteredCubic/
+  # KEEP_GT: True
+CARS: FALSE
+NORMALIZE: True
+NOISE_SCALE: [0.25, 0.25, 0.1]
+# NOISE_SCALE: [0.1, 0.1, 0.1]
+  # LABEL_SCHEME: [1, 2, 3]
+# LABEL_SCHEME: [1,]
+# MASK_RATIO: [0.01, 0.02]
+
+min_gt : 0.95
+max_gt : 0.99
+min_input : 0.45
+max_input : 0.55
