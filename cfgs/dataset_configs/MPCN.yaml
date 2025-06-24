@@ -8,8 +8,8 @@ SPLIT: 6144
 N_RENDERINGS: 1
   # PARTIAL_POINTS_PATH: data/0701n/%s/partial/%0s.pcd
   # COMPLETE_POINTS_PATH: data/0701n/%s/complete/%s.pcd
-PARTIAL_POINTS_PATH: FaceCenteredCubic/
-COMPLETE_POINTS_PATH: FaceCenteredCubic/
+PARTIAL_POINTS_PATH: ./Material/FaceCenteredCubic/
+COMPLETE_POINTS_PATH: ./Material/FaceCenteredCubic/
   # KEEP_GT: True
 CARS: FALSE
 NORMALIZE: True
